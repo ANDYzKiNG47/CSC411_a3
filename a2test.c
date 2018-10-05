@@ -119,8 +119,8 @@ static void test_methods(A2Methods_T methods_under_test) {
 int main(int argc, char *argv[]) {
   assert(argc == 1);
   (void)argv;
-  test_methods(Array2_methods_plain);
-  //  test_methods(Array2_methods_blocked);
+  test_methods(array2_methods_plain);
+  //  test_methods(array2_methods_blocked);
   printf("Passed.\n");  // only if we reach this point without assertion failure
   return 0;
 }
