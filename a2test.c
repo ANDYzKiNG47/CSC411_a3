@@ -23,13 +23,6 @@ static void check_and_increment(int i, int j, A2 a, void *elem, void *cl) {
   *counter += 1;   // NOT *counter++!
 }
 
-static void small_check_and_increment(void *elem, void *cl) {
-  int *p = elem;
-  int *counter = cl;
-  assert(*p == *counter);
-  *counter += 1;   // NOT *counter++!
-}
-
 static void double_row_major_plus() {
   // store increasing integers in row-major order
   A2 array = methods->new_with_blocksize(W, H, sizeof(int), BS);
@@ -51,10 +44,6 @@ static void double_row_major_plus() {
   if (methods->map_row_major) {
     counter = 1;
     methods->map_row_major(array, check_and_increment, &counter);
-  }
-  if (methods->small_map_row_major) {
-    counter = 1;
-    methods->small_map_row_major(array, small_check_and_increment, &counter);
   }
   methods->free(&array);
 }
