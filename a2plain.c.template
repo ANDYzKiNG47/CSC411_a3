@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include <a2plain.h>
-#include "array2.h"
+#include "uarray2.h"
 
 // define a private version of each function in A2Methods_T that we implement
 

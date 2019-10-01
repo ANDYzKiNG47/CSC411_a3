@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[]) {
   int rotation = 0;
-  A2Methods_T methods = array2_methods_plain; // default to Array2 methods
+  A2Methods_T methods = array2_methods_plain; // default to UArray2 methods
   assert(methods);
   A2Methods_mapfun *map = methods->map_default; // default to best map
   assert(map);
