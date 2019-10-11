@@ -6,14 +6,14 @@
 // define a private version of each function in A2Methods_T that we implement
 
 static A2Methods_Array2 new(int width, int height, int size) {
-  return Array2_new(...);
+  return UArray2_new(...);
 }
 
 static A2Methods_Array2 new_with_blocksize(int width, int height, int size,
                                         int blocksize)
 {
   (void) blocksize;
-  return Array2_new(...);
+  return UArray2_new(...);
 }
 
  ... many more private (static) definitions follow ...
