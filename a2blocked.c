@@ -16,7 +16,7 @@ static A2 new_with_blocksize(int width, int height, int size, int blocksize) {
 }
 
 static void a2free (A2 *array2p) {
-  UArray2b_free((Array2b_T *)array2p);
+  UArray2b_free((UArray2b_T *)array2p);
 }
 
 static int width    (A2 array2) { return UArray2b_width    (array2); }
