@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <a2plain.h>
 #include "uarray2.h"
+#include <stdio.h>
+
 
 typedef A2Methods_Array2 A2; //private abbreviation
 
@@ -11,7 +13,6 @@ static A2 new(int width, int height, int size){
 static A2 new_with_blocksize(int width, int height, int size, int blocksize){
     (void) blocksize;
     return Uarray2_new(width, height, size);
-
 }
 
 static void a2free(A2* array2p){
@@ -25,6 +26,7 @@ static int size     (A2 array2) { return UArray2_size     (array2); }
 typedef void applyfun(int i, int j, UArray2_T array2, void *elem, void *cl);
 
 static void map_row_major(A2 array2, A2Methods_applyfun apply, void* cl){
+    printf("a2plain.c closure value: %d\n", *((int*)cl));
     UArray2_map_row_major(array2, (applyfun*) apply, cl); 
 }
 

@@ -19,6 +19,8 @@ static void check_and_increment(int i, int j, A2 a, void *elem, void *cl) {
   (void)a;
   int *p = elem;
   int *counter = cl;
+  printf("a2test.c elem: %d\n", *((int*)(elem)));
+  printf("a2test.c closure value: %d\n", *((int*)(cl)));
   assert(*p == *counter);
   *counter += 1;   // NOT *counter++!
 }
@@ -29,14 +31,14 @@ static void double_row_major_plus() {
   int counter = 1;
   for (int j = 0; j < H; j++) { 
     for (int i = 0; i < W; i++) { // column index varies most rapidly
-      int *p = methods->at(array, i, j);
+      int *p = methods->at(array, j, i);
       *p = counter++;
     }
   }
   counter = 1;
   for (int j = 0; j < H; j++) {
     for (int i = 0; i < W; i++) {
-      int *p = methods->at(array, i, j);
+      int *p = methods->at(array, j, i);
       assert(*p == counter);
       counter++;
     }
@@ -64,7 +66,7 @@ static inline void check(A2 a, int i, int j, unsigned n) {
 bool has_minimum_methods(A2Methods_T m) {
   return m->new != NULL && m->new_with_blocksize != NULL
     && m->free != NULL && m->width != NULL && m->height != NULL
-    && m->size != NULL && m->blocksize != NULL && m->at != NULL;
+    && m->size != NULL &&  m->at != NULL;
 }
 
 bool has_plain_methods(A2Methods_T m) {
@@ -100,15 +102,15 @@ static void test_methods(A2Methods_T methods_under_test) {
   for (int i = 0; i < W; i++) {
     for (int j = 0; j < H; j++) {
       unsigned n = 1000 * i + j;
-      copy_unsigned(methods, array, i, j, n);
-      unsigned *p = methods->at(array, i, j);
+      copy_unsigned(methods, array, j, i, n);
+      unsigned *p = methods->at(array, j, i);
       assert(*p == n);
     }
   }
   for (int i = 0; i < W; i++) {
     for (int j = 0; j < H; j++) {
       unsigned n = 1000 * i + j;
-      unsigned *p = methods->at(array, i, j);
+      unsigned *p = methods->at(array, j, i);
       assert(*p == n);
     }
   }

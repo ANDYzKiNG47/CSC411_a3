@@ -44,9 +44,9 @@ esac
 
 case $link in
   all|ppmtrans) gcc $FLAGS $LFLAGS -o ppmtrans ppmtrans.o \
-                  uarray2.o uarray2b.o a2blocked.o a2plain.o
-                  #remaining-objects-and-libraries-need-filling-in-here.o
-                  linked=yes ;;
+                  uarray2.o uarray2b.o a2blocked.o a2plain.o \
+                  $LIBS
+              linked=yes ;;
 esac
 
 # error if asked to link something we didn't recognize
