@@ -56,7 +56,7 @@ void UArray2_map_row_major(UArray2_T* arr, apply_func apply, void* cl){
     for (int i = 0; i < arr->height; ++i){
         for (int j = 0; j < arr->width; ++j){
             void* e = UArray2_get(arr, i, j);
-            apply(arr, i, j, e, cl);
+            apply(i, j, arr, e, cl);
         }
     }
 }
@@ -66,11 +66,11 @@ void UArray2_map_col_major(UArray2_T* arr, apply_func apply, void* cl){
     for (int j = 0; j < arr->width; ++j){
         for (int i = 0; i < arr->height; ++i){
             void* e = UArray2_get(arr, i, j);
-            apply(arr, i, j, e, cl);
+            apply(i, j, arr, e, cl);
         }
     }
 }
-
+/*
 void UArray2_map_block_major(UArray2_T* arr, apply_func apply, void* cl){
     
     if (arr->height != 9 || arr->width != 9)
@@ -109,6 +109,7 @@ void UArray2_map_block_major(UArray2_T* arr, apply_func apply, void* cl){
         j_idx += 3;
     }
 }
+*/
 
 UArray2_T* UArray2_readPGM(FILE* input){
     
