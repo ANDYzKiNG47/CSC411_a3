@@ -112,7 +112,8 @@ int pixelCoord(UArray2b_T* arr, int i, int j, int target, int* row, int* column)
         return 1;
 }
 
-void UArray2b_map(UArray2b_T* arr, applyfun apply, void* cl){
+void UArray2b_map(UArray2b_T* arr,
+    void apply(int i, int j, UArray2b_T array2b, void *elem, void *cl), void* cl){
     
     int nRows = UArray2_height(arr->matrix);
     int nCols = UArray2_width(arr->matrix);
