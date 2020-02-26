@@ -20,7 +20,8 @@ static void check_and_increment(int i, int j, A2 a, void *elem, void *cl) {
   int *p = elem;
   int *counter = cl;
   printf("a2test.c elem: %d\n", *((int*)(elem)));
-  printf("a2test.c closure value: %d\n", *((int*)(cl)));
+  //printf("a2test.c closure value: %d\n", *((int*)(cl)));
+  printf("a2test.c closure value: %d\n", *counter);
   assert(*p == *counter);
   *counter += 1;   // NOT *counter++!
 }
@@ -29,16 +30,16 @@ static void double_row_major_plus() {
   // store increasing integers in row-major order
   A2 array = methods->new_with_blocksize(W, H, sizeof(int), BS);
   int counter = 1;
-  for (int j = 0; j < H; j++) { 
-    for (int i = 0; i < W; i++) { // column index varies most rapidly
-      int *p = methods->at(array, j, i);
+  for (int i = 0; i < H; i++) { 
+    for (int j = 0; j < W; j++) { // column index varies most rapidly
+      int *p = methods->at(array, i, j);
       *p = counter++;
     }
   }
   counter = 1;
-  for (int j = 0; j < H; j++) {
-    for (int i = 0; i < W; i++) {
-      int *p = methods->at(array, j, i);
+  for (int i = 0; i < H; i++) {
+    for (int j = 0; j < W; j++) {
+      int *p = methods->at(array, i, j);
       assert(*p == counter);
       counter++;
     }
@@ -99,18 +100,18 @@ static void test_methods(A2Methods_T methods_under_test) {
   check(array,  2,  1, 99);
   check(array,  3,  3, 88);
   check(array, 10, 10, 77);
-  for (int i = 0; i < W; i++) {
-    for (int j = 0; j < H; j++) {
+  for (int i = 0; i < H; i++) {
+    for (int j = 0; j < W; j++) {
       unsigned n = 1000 * i + j;
-      copy_unsigned(methods, array, j, i, n);
-      unsigned *p = methods->at(array, j, i);
+      copy_unsigned(methods, array, i, j, n);
+      unsigned *p = methods->at(array, i, j);
       assert(*p == n);
     }
   }
-  for (int i = 0; i < W; i++) {
-    for (int j = 0; j < H; j++) {
+  for (int i = 0; i < H; i++) {
+    for (int j = 0; j < W; j++) {
       unsigned n = 1000 * i + j;
-      unsigned *p = methods->at(array, j, i);
+      unsigned *p = methods->at(array, i, j);
       assert(*p == n);
     }
   }
