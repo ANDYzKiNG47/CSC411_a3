@@ -37,11 +37,11 @@ void* UArray2_get(UArray2_T* arr, int row, int column);
 // iterates through 2D array row by row
 
 void UArray2_map_row_major(UArray2_T* arr, 
-        void apply(int i, int j, UArray2_T array2b, void *elem, void *cl), void* cl);
+        void apply(int i, int j, UArray2_T* array2, void *elem, void *cl), void* cl);
 
 // iterates through 2D array column by column
 void UArray2_map_col_major(UArray2_T* arr,
-        void apply(int i, int j, UArray2_T array2b, void *elem, void *cl), void* cl);
+        void apply(int i, int j, UArray2_T* array2, void *elem, void *cl), void* cl);
 
 
 // iterates through the array in blocks of sqrt(n) x sqrt(n)

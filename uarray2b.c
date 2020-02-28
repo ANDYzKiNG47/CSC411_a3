@@ -15,6 +15,7 @@ UArray2b_T* UArray2b_new(int width, int height, int size, int blocksize){
     arr->height = height;
     arr->size = size;
     arr->blocksize = blocksize;
+    printf("w: %d h: %d\n",width, height);
 
     int nRows = (int) ceil( (double) (height / blocksize) );
     int nCols = (int) ceil( (double) (width / blocksize) );
@@ -30,23 +31,7 @@ UArray2b_T* UArray2b_new(int width, int height, int size, int blocksize){
 }
 
 UArray2b_T* UArray2b_new_64K_block(int width, int height, int size){
-    
-    UArray2b_T* arr = malloc(sizeof(UArray2b_T));
-    arr->width = width;
-    arr->height = height;
-    arr->size = size;
-    arr->blocksize = BLOCK64K;
-
-    int nRows = (int) ceil( (double) (height / arr->blocksize) );
-    int nCols = (int) ceil( (double) (width / arr->blocksize) );
-    arr->matrix = Uarray2_new(nCols, nRows, sizeof(Array_T*));
-    for (int i = 0; i < nRows; ++i){
-        for (int j = 0; j < nCols; ++j){
-            Array_T* p = UArray2_get(arr->matrix, i, j);
-            int blockLength = (int) pow( (double) BLOCK64K, 2.0);
-            *p = Array_new(blockLength, size);
-        }
-    }
+    UArray2b_T* arr = UArray2b_new(width, height, size, (int) sqrt(BLOCK64K));
     return arr;
 }
 
@@ -85,6 +70,7 @@ void* UArray2b_get(UArray2b_T* arr, int row, int column){
         fprintf(stderr, "Error: Out of bounds");
         exit(1);
     }
+    printf("row: %d col: %d\n", row, column);
     //convert pixel to block coordinate
     int block_i = row / arr->blocksize;
     int block_j = column / arr->blocksize;

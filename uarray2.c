@@ -14,6 +14,7 @@ UArray2_T* Uarray2_new(int width, int height, int size){
     uarr2->width = width;
     uarr2->height = height;
     uarr2->size = size;
+    printf("aw: %d, ah: %d, as: %d", uarr2->width, uarr2->height, uarr2->size);
     uarr2->matrix = Array_new(height, sizeof(Array_T*));
     for (int i = 0; i < height; ++i){
         Array_T* p = Array_get(uarr2->matrix, i);
@@ -23,8 +24,9 @@ UArray2_T* Uarray2_new(int width, int height, int size){
 }
 
 void UArray2_free(UArray2_T* arr){
-
+    printf("height: %d width: %d \n", arr->height, arr->width);
     for (int i = 0; i < arr->height; ++i){
+        printf("Bruh: %d\n" , i);
         Array_T* p = Array_get(arr->matrix, i);
         Array_free(p);
     }
@@ -52,23 +54,23 @@ void* UArray2_get(UArray2_T* arr, int row, int column){
 }
 
 void UArray2_map_row_major(UArray2_T* arr, 
-    void apply(int i, int j, UArray2_T array2b, void *elem, void *cl), void* cl){
+    void apply(int i, int j, UArray2_T* array2, void *elem, void *cl), void* cl){
     printf("uarray2.c closure value: %d\n", *((int*)cl));    
     for (int i = 0; i < arr->height; ++i){
         for (int j = 0; j < arr->width; ++j){
             void* e = UArray2_get(arr, i, j);
-            apply(i, j, *arr, e, cl);
+            apply(i, j, arr, e, cl);
         }
     }
 }
 
 void UArray2_map_col_major(UArray2_T* arr, 
-    void apply(int i, int j, UArray2_T array2, void *elem, void *cl), void* cl){
+    void apply(int i, int j, UArray2_T* array2, void *elem, void *cl), void* cl){
     
     for (int j = 0; j < arr->width; ++j){
         for (int i = 0; i < arr->height; ++i){
             void* e = UArray2_get(arr, i, j);
-            apply(i, j, *arr, e, cl);
+            apply(i, j, arr, e, cl);
         }
     }
 }
