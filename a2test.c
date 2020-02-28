@@ -27,15 +27,15 @@ static void double_row_major_plus() {
   // store increasing integers in row-major order
   A2 array = methods->new_with_blocksize(W, H, sizeof(int), BS);
   int counter = 1;
-  for (int i = 0; i < H; i++) { 
-    for (int j = 0; j < W; j++) { // column index varies most rapidly
+  for (int j = 0; j < H; j++) { 
+    for (int i = 0; i < W; i++) { // column index varies most rapidly
       int *p = methods->at(array, i, j);
       *p = counter++;
     }
   }
   counter = 1;
-  for (int i = 0; i < H; i++) {
-    for (int j = 0; j < W; j++) {
+  for (int j = 0; j < H; j++) {
+    for (int i = 0; i < W; i++) {
       int *p = methods->at(array, i, j);
       assert(*p == counter);
       counter++;
@@ -64,7 +64,7 @@ static inline void check(A2 a, int i, int j, unsigned n) {
 bool has_minimum_methods(A2Methods_T m) {
   return m->new != NULL && m->new_with_blocksize != NULL
     && m->free != NULL && m->width != NULL && m->height != NULL
-    && m->size != NULL &&  m->at != NULL;
+    && m->size != NULL && m->blocksize != NULL && m->at != NULL;
 }
 
 bool has_plain_methods(A2Methods_T m) {
@@ -97,16 +97,16 @@ static void test_methods(A2Methods_T methods_under_test) {
   check(array,  2,  1, 99);
   check(array,  3,  3, 88);
   check(array, 10, 10, 77);
-  for (int i = 0; i < H; i++) {
-    for (int j = 0; j < W; j++) {
+  for (int i = 0; i < W; i++) {
+    for (int j = 0; j < H; j++) {
       unsigned n = 1000 * i + j;
       copy_unsigned(methods, array, i, j, n);
       unsigned *p = methods->at(array, i, j);
       assert(*p == n);
     }
   }
-  for (int i = 0; i < H; i++) {
-    for (int j = 0; j < W; j++) {
+  for (int i = 0; i < W; i++) {
+    for (int j = 0; j < H; j++) {
       unsigned n = 1000 * i + j;
       unsigned *p = methods->at(array, i, j);
       assert(*p == n);
@@ -119,8 +119,8 @@ static void test_methods(A2Methods_T methods_under_test) {
 int main(int argc, char *argv[]) {
   assert(argc == 1);
   (void)argv;
-  //test_methods(array2_methods_plain);
-  test_methods(array2_methods_blocked);
+  test_methods(array2_methods_plain);
+  //  test_methods(array2_methods_blocked);
   printf("Passed.\n");  // only if we reach this point without assertion failure
   return 0;
 }
