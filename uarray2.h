@@ -28,7 +28,7 @@ int UArray2_size(UArray2_T* arr);
 // returns a pointer to an elements at (row,column)
 // user is responsible for casting void* pointer to correct type
 // can be used to modify elements
-void* UArray2_get(UArray2_T* arr, int row, int column);
+void* UArray2_get(UArray2_T* arr,int column, int row);
 
 // map functions iterate through 2D array and
 // performs apply function on each element

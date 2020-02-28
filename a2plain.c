@@ -35,7 +35,7 @@ static void map_col_major(A2 array2, A2Methods_applyfun apply, void* cl){
 }
 
 static A2Methods_Object* at(A2 array2, int i, int j){
-    return UArray2_get( array2, i, j );
+    return UArray2_get(array2, i, j );
 }
 
 static struct A2Methods_T array2_methods_plain_struct = {
@@ -45,7 +45,7 @@ static struct A2Methods_T array2_methods_plain_struct = {
   width,
   height,
   size,
-  NULL, // blocksize
+  width, // blocksize
   at,
   map_row_major,
   map_col_major,

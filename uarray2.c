@@ -44,9 +44,10 @@ int UArray2_size(UArray2_T* arr){
     return arr->size;
 }
 
-void* UArray2_get(UArray2_T* arr, int row, int column){
+void* UArray2_get(UArray2_T* arr, int column, int row){
     Array_T* p = Array_get(arr->matrix, row);
     void* elem = Array_get(*p, column);
+    printf("row: %d, col %d\n", row, column);
     return elem;
 }
 

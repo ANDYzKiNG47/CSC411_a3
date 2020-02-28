@@ -64,7 +64,7 @@ int UArray2b_blocksize(UArray2b_T* arr){
     return arr->blocksize;
 }
 
-void* UArray2b_get(UArray2b_T* arr, int row, int column){
+void* UArray2b_get(UArray2b_T* arr, int column, int row){
     if (row >= arr->height || row < 0 || column >= arr->width || column < 0){
         fprintf(stderr, "Error: Out of bounds");
         exit(1);
