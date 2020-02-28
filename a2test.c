@@ -19,9 +19,6 @@ static void check_and_increment(int i, int j, A2 a, void *elem, void *cl) {
   (void)a;
   int *p = elem;
   int *counter = cl;
-  printf("a2test.c elem: %d\n", *((int*)(elem)));
-  //printf("a2test.c closure value: %d\n", *((int*)(cl)));
-  printf("a2test.c closure value: %d\n", *counter);
   assert(*p == *counter);
   *counter += 1;   // NOT *counter++!
 }

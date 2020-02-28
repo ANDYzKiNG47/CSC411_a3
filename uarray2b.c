@@ -15,10 +15,9 @@ UArray2b_T* UArray2b_new(int width, int height, int size, int blocksize){
     arr->height = height;
     arr->size = size;
     arr->blocksize = blocksize;
-    printf("w: %d h: %d\n",width, height);
 
-    int nRows = (int) ceil( (double) (height / blocksize) );
-    int nCols = (int) ceil( (double) (width / blocksize) );
+    int nRows = (int) ceil( (double) ((double)height /(double) blocksize) );
+    int nCols = (int) ceil( (double) ((double)width / (double)blocksize) );
     arr->matrix = Uarray2_new(nCols, nRows, sizeof(Array_T*));
     for (int i = 0; i < nRows; ++i){
         for (int j = 0; j < nCols; ++j){
