@@ -21,7 +21,7 @@ UArray2b_T* UArray2b_new(int width, int height, int size, int blocksize){
     arr->matrix = Uarray2_new(nCols, nRows, sizeof(Array_T*));
     for (int i = 0; i < nRows; ++i){
         for (int j = 0; j < nCols; ++j){
-            Array_T* p = UArray2_get(arr->matrix, i, j);
+            Array_T* p = UArray2_get(arr->matrix, j, i);
             int blockLength = (int) pow( (double) blocksize, 2.0);
             *p = Array_new(blockLength, size);
         }
@@ -40,7 +40,7 @@ void UArray2b_free(UArray2b_T* arr){
     int nCols = UArray2_width(arr->matrix);
     for (int i = 0; i < nRows; ++i){
         for (int j = 0; j < nCols; ++j){
-            Array_T* p = UArray2_get(arr->matrix, i, j);
+            Array_T* p = UArray2_get(arr->matrix, j, i);
             Array_free(p);
         }
     }
@@ -69,12 +69,11 @@ void* UArray2b_get(UArray2b_T* arr, int column, int row){
         fprintf(stderr, "Error: Out of bounds");
         exit(1);
     }
-    printf("row: %d col: %d\n", row, column);
     //convert pixel to block coordinate
     int block_i = row / arr->blocksize;
     int block_j = column / arr->blocksize;
     int target = arr->blocksize * (row % arr->blocksize) + (column % arr->blocksize);
-    Array_T* p = UArray2_get(arr->matrix, block_i, block_j);
+    Array_T* p = UArray2_get(arr->matrix, block_j, block_i);
     return Array_get(*p, target);
 }
 
@@ -122,7 +121,7 @@ void UArray2b_map(UArray2b_T* arr,
                     continue; 
                 }
                 // DO STUFF
-                void* e = UArray2b_get(arr, *row, *col);
+                void* e = UArray2b_get(arr, *col, *row);
                 apply(*row, *col, *arr, e, cl);
             }//end k
         }//end j

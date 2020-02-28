@@ -47,7 +47,6 @@ int UArray2_size(UArray2_T* arr){
 void* UArray2_get(UArray2_T* arr, int column, int row){
     Array_T* p = Array_get(arr->matrix, row);
     void* elem = Array_get(*p, column);
-    printf("row: %d, col %d\n", row, column);
     return elem;
 }
 
@@ -55,7 +54,7 @@ void UArray2_map_row_major(UArray2_T* arr,
     void apply(int i, int j, UArray2_T* array2, void *elem, void *cl), void* cl){
     for (int i = 0; i < arr->height; ++i){
         for (int j = 0; j < arr->width; ++j){
-            void* e = UArray2_get(arr, i, j);
+            void* e = UArray2_get(arr, j, i);
             apply(i, j, arr, e, cl);
         }
     }

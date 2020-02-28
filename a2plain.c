@@ -26,7 +26,6 @@ static int size     (A2 array2) { return UArray2_size     (array2); }
 typedef void applyfun(int i, int j, UArray2_T* array2, void *elem, void *cl);
 
 static void map_row_major(A2 array2, A2Methods_applyfun apply, void* cl){
-    printf("a2plain.c closure value: %d\n", *((int*)cl));
     UArray2_map_row_major(array2, (applyfun*) apply, cl); 
 }
 
