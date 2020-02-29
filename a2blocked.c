@@ -28,7 +28,7 @@ static A2Methods_Object *at(A2 array2, int i, int j) {
   return UArray2b_get(array2, i, j);
 }
 
-typedef void applyfun(int i, int j, UArray2b_T array2b, void *elem, void *cl);
+typedef void applyfun(int i, int j, UArray2b_T* array2b, void *elem, void *cl);
 
 static void map_block_major (A2 array2, A2Methods_applyfun apply, void *cl) {
   UArray2b_map(array2, (applyfun*)apply, cl);

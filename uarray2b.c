@@ -66,7 +66,8 @@ int UArray2b_blocksize(UArray2b_T* arr){
 
 void* UArray2b_get(UArray2b_T* arr, int column, int row){
     if (row >= arr->height || row < 0 || column >= arr->width || column < 0){
-        fprintf(stderr, "Error: Out of bounds");
+        //printf("w: %d h: %d r: %d c: %d\n", arr->width, arr->height, row, column); 
+        fprintf(stderr, "Error: Out of bounds\n");
         exit(1);
     }
     //convert pixel to block coordinate
@@ -79,7 +80,7 @@ void* UArray2b_get(UArray2b_T* arr, int column, int row){
 
 // returns 1 if in bounds
 // returns 0 if not
-int pixelCoord(UArray2b_T* arr, int i, int j, int target, int* row, int* column){
+int pixelCoord(UArray2b_T* arr, int i, int j, int target, int* column, int* row){
     int r, c;
     
     r = (arr->blocksize * i) + (target / arr->blocksize);
@@ -97,7 +98,7 @@ int pixelCoord(UArray2b_T* arr, int i, int j, int target, int* row, int* column)
 }
 
 void UArray2b_map(UArray2b_T* arr,
-    void apply(int i, int j, UArray2b_T array2b, void *elem, void *cl), void* cl){
+    void apply(int i, int j, UArray2b_T* array2b, void *elem, void *cl), void* cl){
     
     int nRows = UArray2_height(arr->matrix);
     int nCols = UArray2_width(arr->matrix);
@@ -116,16 +117,18 @@ void UArray2b_map(UArray2b_T* arr,
             for (int k = 0; k < blockLength; ++k){
                 // if block is on the edge and the elem being accessed 
                 // is out of bounds continue with loop
-                int inBounds = pixelCoord( arr, i, j, k, row, col);
+                int inBounds = pixelCoord(arr, i, j, k, col, row);
                 if ( isEdge && !inBounds ){
                     continue; 
                 }
                 // DO STUFF
                 void* e = UArray2b_get(arr, *col, *row);
-                apply(*row, *col, *arr, e, cl);
+                apply( *col, *row, arr, e, cl);
             }//end k
         }//end j
     }//end i
+    free(row);
+    free(col);
 }
 
 

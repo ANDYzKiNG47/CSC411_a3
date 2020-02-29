@@ -11,14 +11,15 @@
 static A2Methods_T methods;
 typedef A2Methods_Array2 A2;
 
-void rotate90(int i, int j, A2 a, void* elem, void* cl);
+void rotate90(int j, int i, A2 a, void* elem, void* cl);
 
-void rotate180(int i, int j, A2 a, void* elem, void* cl);
+void rotate180(int j, int i, A2 a, void* elem, void* cl);
 
-void rotate270(int i, int j, A2 a, void* elem, void* cl);
+void rotate270(int j, int i, A2 a, void* elem, void* cl);
+
+Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods);
 
 int main(int argc, char *argv[]) {
-    printf("start\n");
     int rotation = 0;
     methods = array2_methods_plain; // default to UArray2 methods
     assert(methods);
@@ -65,72 +66,83 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    printf("before read\n");
     Pnm_ppm img = Pnm_ppmread(stdin, methods);
-    printf("after read\n");
-    A2 arr_copy;
-    int w = img->width;
-    int h = img->height;
+    unsigned w = img->width;
+    unsigned h = img->height;
+    unsigned d = img->denominator; 
     int s = sizeof(Pnm_rgb);
     int bs = img->methods->blocksize(img->pixels);
-
+    Pnm_ppm img_copy;
     switch(rotation){
         case 90:
-            arr_copy = methods->new_with_blocksize(h, w, s, bs);
-            map(img->pixels, rotate90, arr_copy);
-            img->width = h;
-            img->height = w;
+            img_copy = new_Pnm(h, w, d, s, bs, methods);
+            map(img->pixels, rotate90, img_copy);
             break;
 
         case 180:
-            arr_copy = methods->new_with_blocksize(w, h, s, bs);
-            map(img->pixels, rotate180, arr_copy);
+            img_copy = new_Pnm(w, h, d, s, bs, methods);
+            map(img->pixels, rotate180, img_copy);
             break;
 
         case 270:
-            arr_copy = methods->new_with_blocksize(h, w, s, bs);
-            map(img->pixels,rotate270, arr_copy);
-            img->width = h;
-            img->height = w;
+            img_copy = new_Pnm(h, w, d, s, bs, methods);
+            map(img->pixels,rotate270, img_copy);
             break;
 
         default:
             break;
     }
     if (rotation != 0){
-        img->pixels = arr_copy;
+        Pnm_ppmwrite(stdout, img_copy);
+        Pnm_ppmfree(&img_copy);
+    } else {
+        Pnm_ppmwrite(stdout, img);
     }
-    printf("yes\n");
-    Pnm_ppmwrite(stdout, img);
     Pnm_ppmfree(&img);
 
     return 0;
     //assert(0); // the rest of this function is not yet implemented
 }
 
-void rotate90(int i, int j, A2 a, void* elem, void* cl){
-    int new_i = methods->height(a) - j -1;
+void rotate90(int j, int i, A2 a, void* elem, void* cl){
+    
+    Pnm_ppm copy = (Pnm_ppm) cl;
+    int new_i = methods->width(a) - j -1;
     int new_j = i;
-    Pnm_rgb new_p = methods->at(cl, new_j, new_i);
+    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
+    Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
 
-void rotate180(int i, int j, A2 a, void* elem, void* cl){
-    int new_i = methods->width(a) - i - 1;
-    int new_j = methods->height(a) - j - 1;
-    Pnm_rgb new_p = methods->at(cl, new_j, new_i);
+void rotate180(int j, int i, A2 a, void* elem, void* cl){
+    Pnm_ppm copy = (Pnm_ppm) cl;
+    int new_i = methods->height(a) - i - 1;
+    int new_j = methods->width(a) - j - 1;
+    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
+    Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
 
-void rotate270(int i, int j, A2 a, void* elem, void* cl){
+void rotate270(int j, int i, A2 a, void* elem, void* cl){
+    Pnm_ppm copy = (Pnm_ppm) cl;
     int new_i = j;
     int new_j = methods->width(a) - i - 1;
-    Pnm_rgb new_p = methods->at(cl, new_j, new_i);
+    Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
 
 
-
+Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods){
+    
+    A2 arr = methods->new_with_blocksize((int)w, (int) h, size, blocksize);
+    Pnm_ppm img_copy  =  malloc(sizeof(struct Pnm_ppm) * 1);
+    img_copy->width = w;
+    img_copy->height = h;
+    img_copy->denominator = d;
+    img_copy->pixels = arr;
+    img_copy->methods = methods;
+    return img_copy;
+}
 
 
 

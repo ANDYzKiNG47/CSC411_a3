@@ -7,7 +7,7 @@
 
 
 #define W 13
-#define H 15
+#define H 27
 #define BS 4
 
 static A2Methods_T methods;
