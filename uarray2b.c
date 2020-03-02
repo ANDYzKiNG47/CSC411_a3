@@ -113,7 +113,7 @@ void UArray2b_map(UArray2b_T* arr,
     int isEdge = 0; // bool to track if block on an edge
     int* row = malloc(sizeof(int));
     int* col = malloc(sizeof(int));
-
+    // invariant: all pixels passed to the apply function will be in bounds
     for (int i = 0; i < nRows; ++i){
         for (int j = 0; j < nCols; ++j){
             // check if edge block
