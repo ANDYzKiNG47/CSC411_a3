@@ -1,13 +1,17 @@
 Andrew Zelano and Isaac Pontarelli
 CSC 411 assignment 3 (Locality)
 
+
 We implemented code in ppmtrans, uarray2 (from the previous iii assignment), and uarray2b.
 All other files are part of the assignment starter code that was given.
 
-We have correctly implemented the rotate 90, 180, and 270 as well as the row, column and block major.
+
+We have correctly implemented (to the best of our knowlege and testing) the rotate 90, 180,
+and 270 as well as the row, column and block major.
+
 
 Architecture documentation:
-
+---------------------------
 For the underlying 2d array datastructure we used our implementation from the last assignment (iii).
 This is a row major 2d array with a spine and arrays for the rows. Hanson Arrays are used for both
 the spine and the rows. This with the addition of a column major mapping function this made up the 
@@ -16,9 +20,17 @@ majority of a2plain.
 A2blocked also used our uarray2 code, however 1d Hanson arrays were stored in each cell to represent
 the blocks. This is technically now a 3d array and could definitly be expressed in a simpler fashion.
 
+The rest of the architecture adheres to the design specification for this assignment.
 
+At the highest level is the main function in ppmtrans. The image is read in using the pnm interface
+provided in the include folder. Argument parsing is handled by the starter code given with the
+assignment.
+
+We decided to write our own header file for uarray 2b. This allowed us to match the conventions of
+our uarray2 code and more seamlessly integrate our previous assignment.
 
 Measured speeds:
+----------------
 Our speeds where measured using the winter.jpg scaled 2.5 times. These times are the
 average of 3 trials using the time command in linux and reporting the user cpu time.
 Units are seconds.
@@ -34,5 +46,21 @@ rotation 	row major	col major	block major
 90		4		4		2
 180		1		5		3
 
+Explanation:
+These numbers make sense because our underlying structure is row major. This is why 180 degree
+rotations are so quick on row major mapping. Both the reading and the writing is done in a row
+major fashion.
 
+It also accounts for why row major and column major 90 degree rotations have similiar times.
+In each case either the read or the write is in row major.
+
+Our blocked arrays are innificient due to our own lazyness. We allocate the same amount of memory
+for each block and access in the same patterns. This means we check the bounds of each pixel on
+all of the edge blocks. This is extra computation being performed numerous times. A more elegant 
+solution might have been to implement a flattened array and a smarter access pattern. This accounts
+for how slow our block major mapping is. 
+
+
+Time:
+-----
 We estimate that we have spent approximately 16 hours including the first submission (documentation).
