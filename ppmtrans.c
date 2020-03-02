@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     unsigned w = img->width;
     unsigned h = img->height;
     unsigned d = img->denominator; 
-    int s = sizeof(Pnm_rgb);
+    int s = sizeof(struct Pnm_rgb);
     int bs = img->methods->blocksize(img->pixels);
     Pnm_ppm img_copy;
     switch(rotation){
@@ -105,11 +105,9 @@ int main(int argc, char *argv[]) {
 }
 
 void rotate90(int j, int i, A2 a, void* elem, void* cl){
-    
     Pnm_ppm copy = (Pnm_ppm) cl;
-    int new_i = methods->width(a) - j -1;
-    int new_j = i;
-    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
+    int new_i = j;
+    int new_j = methods->height(a) - i - 1;
     Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
@@ -124,13 +122,14 @@ void rotate180(int j, int i, A2 a, void* elem, void* cl){
 }
 
 void rotate270(int j, int i, A2 a, void* elem, void* cl){
+    
     Pnm_ppm copy = (Pnm_ppm) cl;
-    int new_i = j;
-    int new_j = methods->width(a) - i - 1;
+    int new_i = methods->width(a) - j -1;
+    int new_j = i;
+    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
     Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
-
 
 Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods){
     

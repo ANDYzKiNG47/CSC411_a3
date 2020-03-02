@@ -28,6 +28,6 @@ int UArray2b_blocksize(UArray2b_T* arr);
 void* UArray2b_get(UArray2b_T* arr, int column, int row);
 
 void UArray2b_map(UArray2b_T* arr, 
-        void apply(int i, int j, UArray2b_T array2b, void *elem, void *cl), void* cl);
+        void apply(int i, int j, UArray2b_T* array2b, void *elem, void *cl), void* cl);
 
 #endif
