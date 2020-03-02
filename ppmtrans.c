@@ -17,10 +17,17 @@ void rotate180(int j, int i, A2 a, void* elem, void* cl);
 
 void rotate270(int j, int i, A2 a, void* elem, void* cl);
 
+void flipHorizontal(int j, int i, A2 a, void* elem, void* cl);
+
+void flipVertical(int j, int i, A2 a, void* elem, void* cl);
+
+void transpose(int j, int i, A2 a, void* elem, void* cl);
+
 Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods);
 
 int main(int argc, char *argv[]) {
     int rotation = 0;
+    char transformation = '\0';
     methods = array2_methods_plain; // default to UArray2 methods
     assert(methods);
     A2Methods_mapfun *map = methods->map_default; // default to best map
@@ -53,6 +60,15 @@ int main(int argc, char *argv[]) {
             assert(*endptr == '\0'); // parsed all correctly
             assert(rotation == 0   || rotation == 90
                 || rotation == 180 || rotation == 270);
+        }
+        else if (!strcmp(argv[i], "-transpose")){
+            rotation = -1;
+            transformation = 't';
+        }
+        else if (!strcmp(argv[i], "-flip")){
+            rotation = -1;
+            transformation = argv[i+1][0];
+            assert (transformation == 'v' || transformation == 'h');
         } 
         else if (*argv[i] == '-') {
             fprintf(stderr, "%s: unknown option '%s'\n", argv[0], argv[i]);
@@ -74,6 +90,10 @@ int main(int argc, char *argv[]) {
     int bs = img->methods->blocksize(img->pixels);
     Pnm_ppm img_copy;
     switch(rotation){
+        case 0:
+            Pnm_ppmwrite(stdout, img);
+            Pnm_ppmfree(&img);
+            return 0;
         case 90:
             img_copy = new_Pnm(h, w, d, s, bs, methods);
             map(img->pixels, rotate90, img_copy);
@@ -86,22 +106,31 @@ int main(int argc, char *argv[]) {
 
         case 270:
             img_copy = new_Pnm(h, w, d, s, bs, methods);
-            map(img->pixels,rotate270, img_copy);
+            map(img->pixels, rotate270, img_copy);
             break;
 
         default:
+            if (transformation == 't'){
+                img_copy = new_Pnm(h, w, d, s, bs, methods);
+                map(img->pixels, transpose, img_copy);
+            }
+            else if (transformation == 'v'){
+                img_copy = new_Pnm(w, h, d, s, bs, methods);
+                map(img->pixels, flipVertical, img_copy);
+            }
+            else if (transformation == 'h'){
+                img_copy = new_Pnm(w, h, d, s, bs, methods);
+                map(img->pixels, flipHorizontal, img_copy);
+            }
             break;
     }
-    if (rotation != 0){
-        Pnm_ppmwrite(stdout, img_copy);
-        Pnm_ppmfree(&img_copy);
-    } else {
-        Pnm_ppmwrite(stdout, img);
-    }
+
+    assert (img_copy != NULL);
+    Pnm_ppmwrite(stdout, img_copy);
+    Pnm_ppmfree(&img_copy);
     Pnm_ppmfree(&img);
 
     return 0;
-    //assert(0); // the rest of this function is not yet implemented
 }
 
 void rotate90(int j, int i, A2 a, void* elem, void* cl){
@@ -116,7 +145,6 @@ void rotate180(int j, int i, A2 a, void* elem, void* cl){
     Pnm_ppm copy = (Pnm_ppm) cl;
     int new_i = methods->height(a) - i - 1;
     int new_j = methods->width(a) - j - 1;
-    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
     Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
 }
@@ -124,11 +152,31 @@ void rotate180(int j, int i, A2 a, void* elem, void* cl){
 void rotate270(int j, int i, A2 a, void* elem, void* cl){
     
     Pnm_ppm copy = (Pnm_ppm) cl;
-    int new_i = methods->width(a) - j -1;
+    int new_i = methods->width(a) - j - 1;
     int new_j = i;
-    //printf("w: %d h: %d new_i: %d new_j: %d i: %d j: %d\n", methods->width(a), methods->height(a), new_i, new_j, i, j);
     Pnm_rgb new_p = methods->at(copy->pixels, new_j, new_i);
     *new_p = *((Pnm_rgb) elem);
+}
+
+void flipHorizontal(int j, int i, A2 a, void* elem, void* cl){
+    Pnm_ppm copy = (Pnm_ppm) cl;
+    int new_j = methods->width(a) - j - 1;
+    Pnm_rgb new_p = methods->at(copy->pixels, new_j, i);
+    *new_p = *((Pnm_rgb) elem);
+}
+
+void flipVertical(int j, int i, A2 a, void* elem, void* cl){
+    Pnm_ppm copy = (Pnm_ppm) cl;
+    int new_i = methods->height(a) - i - 1;
+    Pnm_rgb new_p = methods->at(copy->pixels, j, new_i);
+    *new_p = *((Pnm_rgb) elem);
+}
+
+void transpose(int j, int i, A2 a, void* elem, void* cl){
+    (void) a;
+    Pnm_ppm copy = (Pnm_ppm) cl;
+    Pnm_rgb new_p = methods->at(copy->pixels, i, j);
+    *new_p = *((Pnm_rgb) elem);   
 }
 
 Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods){
