@@ -82,7 +82,9 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
+    
     Pnm_ppm img = Pnm_ppmread(stdin, methods);
+    //extracting parameters from image for the copy
     unsigned w = img->width;
     unsigned h = img->height;
     unsigned d = img->denominator; 
@@ -108,7 +110,7 @@ int main(int argc, char *argv[]) {
             img_copy = new_Pnm(h, w, d, s, bs, methods);
             map(img->pixels, rotate270, img_copy);
             break;
-
+        // if not a rotation
         default:
             if (transformation == 't'){
                 img_copy = new_Pnm(h, w, d, s, bs, methods);
@@ -158,6 +160,7 @@ void rotate270(int j, int i, A2 a, void* elem, void* cl){
     *new_p = *((Pnm_rgb) elem);
 }
 
+// Mirrors image horizontally (left-right)
 void flipHorizontal(int j, int i, A2 a, void* elem, void* cl){
     Pnm_ppm copy = (Pnm_ppm) cl;
     int new_j = methods->width(a) - j - 1;
@@ -165,6 +168,7 @@ void flipHorizontal(int j, int i, A2 a, void* elem, void* cl){
     *new_p = *((Pnm_rgb) elem);
 }
 
+// Mirrors image vertically (top-bottom)
 void flipVertical(int j, int i, A2 a, void* elem, void* cl){
     Pnm_ppm copy = (Pnm_ppm) cl;
     int new_i = methods->height(a) - i - 1;
@@ -172,6 +176,7 @@ void flipVertical(int j, int i, A2 a, void* elem, void* cl){
     *new_p = *((Pnm_rgb) elem);
 }
 
+// Transpose image (across upper left to lower right axis)
 void transpose(int j, int i, A2 a, void* elem, void* cl){
     (void) a;
     Pnm_ppm copy = (Pnm_ppm) cl;
@@ -179,6 +184,7 @@ void transpose(int j, int i, A2 a, void* elem, void* cl){
     *new_p = *((Pnm_rgb) elem);   
 }
 
+// Creates and returns a new Pnm_ppm struct
 Pnm_ppm new_Pnm(unsigned w, unsigned h, unsigned d, int size, int blocksize, A2Methods_T methods){
     
     A2 arr = methods->new_with_blocksize((int)w, (int) h, size, blocksize);
