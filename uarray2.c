@@ -65,7 +65,7 @@ void UArray2_map_col_major(UArray2_T* arr,
     
     for (int j = 0; j < arr->width; ++j){
         for (int i = 0; i < arr->height; ++i){
-            void* e = UArray2_get(arr, i, j);
+            void* e = UArray2_get(arr, j, i);
             apply(j, i, arr, e, cl);
         }
     }
