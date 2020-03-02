@@ -1,7 +1,7 @@
 #ifndef UARRAY2B_INCLUDED
 #define UARRAY2B_INCLUDED
 
-#define BLOCK64K 64000
+#define BLOCK64K 65536
 
 #include <math.h>
 #include <stdio.h>
